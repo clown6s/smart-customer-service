@@ -1,0 +1,34 @@
+# ============================================================
+# 生产环境配置覆盖 (application-prod.yml)
+# ============================================================
+
+logging:
+  level:
+    root: WARN
+    com.shopmall.cs: INFO
+    dev.langchain4j: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# 生产：关闭 LLM 请求日志（含敏感内容）
+deepseek:
+  log-requests: false
+  log-responses: false
+
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 5
+
+cs:
+  rate-limit:
+    max-requests: 20
+    window-seconds: 60

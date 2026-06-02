@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- ===== 开发环境：彩色控制台输出 ===== -->
+    <springProfile name="dev,default">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan([%thread]) %boldWhite(%logger{36}) - %msg%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+
+        <!-- MyBatis SQL 日志独立控制 -->
+        <logger name="com.baomidou.mybatisplus.core.jdbc" level="DEBUG"/>
+    </springProfile>
+
+    <!-- ===== 生产环境：JSON 结构化日志（便于 ELK/Loki 采集）===== -->
+    <springProfile name="prod">
+        <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <!-- 内置字段映射 -->
+                <fieldNames>
+                    <timestamp>timestamp</timestamp>
+                    <message>message</message>
+                    <logger>logger</logger>
+                    <thread>thread</thread>
+                    <level>level</level>
+                    <levelValue>[ignore]</levelValue>
+                </fieldNames>
+                <!-- 自动提取 MDC 字段：traceId / userId / sessionId -->
+                <includeMdcKeyName>traceId</includeMdcKeyName>
+                <includeMdcKeyName>userId</includeMdcKeyName>
+                <includeMdcKeyName>sessionId</includeMdcKeyName>
+                <timeZone>Asia/Shanghai</timeZone>
+            </encoder>
+        </appender>
+
+        <!-- 异步写出，减少主线程阻塞 -->
+        <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+            <appender-ref ref="STDOUT_JSON"/>
+            <queueSize>1024</queueSize>
+            <discardingThreshold>0</discardingThreshold>
+            <includeCallerData>false</includeCallerData>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="ASYNC_STDOUT"/>
+        </root>
+
+        <logger name="com.shopmall.cs" level="INFO" additivity="false">
+            <appender-ref ref="ASYNC_STDOUT"/>
+        </logger>
+    </springProfile>
+
+</configuration>

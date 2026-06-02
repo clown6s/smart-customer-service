@@ -1,0 +1,19 @@
+# ============================================================
+# Grafana datasource 自动配置：Loki
+# ============================================================
+apiVersion: 1
+
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    isDefault: true
+    editable: true
+    jsonData:
+      maxLines: 1000
+      derivedFields:
+        - datasourceName: Loki
+          matcherRegex: "traceId=(w+)"
+          name: traceId
+          url: "http://loki:3100/explore?orgId=1&left=%7B%22queries%22:%5B%7B%22refId%22:%22A%22,%22expr%22:%22%7BtraceId%3D%22%24__cell%22%7D%22%7D%5D%7D"

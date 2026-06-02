@@ -1,0 +1,29 @@
+# ============================================================
+# 开发环境配置覆盖 (application-dev.yml)
+# 只需要和 application.yml 不同的配置项
+# ============================================================
+
+logging:
+  level:
+    root: INFO
+    com.shopmall.cs: DEBUG
+    dev.langchain4j: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+deepseek:
+  # 开发环境：打印请求/响应（含 token 用量）
+  log-requests: true
+  log-responses: true
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    map-underscore-to-camel-case: true
