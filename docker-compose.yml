@@ -13,7 +13,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: ${DB_PASSWORD:-ChangeMe_2024!}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
       - ./src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U root -d smart_cs"]
