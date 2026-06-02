@@ -5,6 +5,9 @@
 # ── Stage 1: Build ──────────────────────────────────────────
 FROM eclipse-temurin:21-jdk-alpine AS builder
 
+# 安装 Maven
+RUN apk add --no-cache maven
+
 WORKDIR /build
 
 # 先只复制 pom.xml，利用 Docker 层缓存，依赖不变时跳过 mvn dependency:go-offline
