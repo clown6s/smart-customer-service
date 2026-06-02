@@ -31,10 +31,6 @@ schema_config:
         prefix: index_
         period: 24h
 
-storage:
-  filesystem:
-    directory: /loki/index
-
 limits_config:
   max_streams_per_user: 100
   max_global_streams_per_user: 1000
