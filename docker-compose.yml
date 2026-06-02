@@ -6,7 +6,7 @@
 services:
   # ── PostgreSQL ─────────────────────────────────────────
   postgres:
-    image: postgres:18-alpine
+    image: postgres:18.4
     container_name: smart-cs-postgres
     environment:
       POSTGRES_DB: smart_cs
@@ -38,7 +38,7 @@ services:
 
   # ── Redis ─────────────────────────────────────────────
   redis:
-    image: redis:8.6-alpine
+    image: redis:8.8.0
     container_name: smart-cs-redis
     command: >
       redis-server
@@ -75,6 +75,7 @@ services:
       target: runtime
       args:
         JAR_FILE: target/smart-customer-service-*.jar
+    pull_policy: build
     image: smart-customer-service:latest
     container_name: smart-cs-app
     env_file: .env
@@ -118,7 +119,7 @@ services:
 
   # ── Loki（日志聚合存储）───────────────────────────────
   loki:
-    image: grafana/loki:3.0-alpine
+    image:  grafana/loki:3.7.2
     container_name: smart-cs-loki
     command: -config.file=/etc/loki/config.yaml
     volumes:
@@ -138,7 +139,7 @@ services:
 
   # ── Promtail（日志采集 Agent）──────────────────────────
   promtail:
-    image: grafana/promtail:3.0-alpine
+    image: grafana/promtail:3.6.11
     container_name: smart-cs-promtail
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
@@ -155,7 +156,7 @@ services:
 
   # ── Grafana（日志可视化）──────────────────────────────
   grafana:
-    image: grafana/grafana:11.0-alpine
+    image: grafana/grafana:12.4
     container_name: smart-cs-grafana
     ports:
       - "3000:3000"
