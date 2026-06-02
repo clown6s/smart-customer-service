@@ -5,12 +5,11 @@
 # ── Stage 1: Build ──────────────────────────────────────────
 FROM eclipse-temurin:21-jdk-alpine AS builder
 
-# 安装 Maven
 RUN apk add --no-cache maven
 
 WORKDIR /build
 
-# 先只复制 pom.xml，利用 Docker 层缓存，依赖不变时跳过 mvn dependency:go-offline
+# 先只复制 pom.xml，利用 Docker 层缓存，依赖不变时跳过下载
 COPY pom.xml .
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -f pom.xml dependency:go-offline -q
@@ -23,7 +22,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 # ── Stage 2: Runtime ────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
-# 非 root 用户运行，提升安全性
+# 非 root 用户运行
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
@@ -36,10 +35,9 @@ RUN mkdir -p /app/logs && chown -R appuser:appgroup /app
 
 USER appuser
 
-# 暴露端口
 EXPOSE 8080
 
-# JVM 调优参数（容器感知 + GC 日志）
+# JVM 容器感知参数
 ENV JAVA_OPTS="-XX:+UseContainerSupport \
   -XX:MaxRAMPercentage=75.0 \
   -XX:+UseG1GC \
@@ -49,6 +47,5 @@ ENV JAVA_OPTS="-XX:+UseContainerSupport \
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
 
-# 健康检查（K8s 场景可忽略，交给 Actuator probe）
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD wget -qO- http://localhost:8080/actuator/health/liveness || exit 1

@@ -1,9 +1,39 @@
+# 版本控制
 .git
+.gitignore
+
+# IDE
 .idea
+*.iml
+*.iws
+.vscode
+
+# 编译产物
 target
-*.md
+*.jar
+*.war
+*.class
+
+# 环境变量（含密钥）
 .env
 .env.*
 !.env.example
+
+# 部署配置（构建不需要）
+deploy/
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile
+.dockerignore
+
+# 文档
+*.md
+LICENSE
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
 *.log
-*.class
+logs/

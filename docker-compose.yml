@@ -12,6 +12,7 @@ services:
       POSTGRES_DB: smart_cs
       POSTGRES_USER: root
       POSTGRES_PASSWORD: ${DB_PASSWORD:-ChangeMe_2024!}
+      TZ: Asia/Shanghai
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -27,6 +28,7 @@ services:
         max-size: "50m"
         max-file: "3"
     restart: unless-stopped
+    shm_size: 256m
     deploy:
       resources:
         limits:
@@ -38,7 +40,7 @@ services:
 
   # ── Redis ─────────────────────────────────────────────
   redis:
-    image: redis:8.8.0
+    image: redis:8.8.0-alpine
     container_name: smart-cs-redis
     command: >
       redis-server
@@ -46,8 +48,10 @@ services:
       --maxmemory 256mb
       --maxmemory-policy allkeys-lru
       --appendonly yes
+    environment:
+      TZ: Asia/Shanghai
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-ChangeMe_StrongP@ss2026!}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-ChangeMe_StrongP@ss2026!}", "--no-auth-warning", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -73,17 +77,18 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runtime
-      args:
-        JAR_FILE: target/smart-customer-service-*.jar
     pull_policy: build
     image: smart-customer-service:latest
     container_name: smart-cs-app
     env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      TZ: Asia/Shanghai
+      # 数据库连接（变量名必须与 application.yml 一致）
       DATABASE_URL: jdbc:postgresql://postgres:5432/smart_cs
-      DATABASE_USERNAME: root
-      DATABASE_PASSWORD: ${DB_PASSWORD:-ChangeMe_2024!}
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-ChangeMe_2024!}
+      # Redis 连接
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:-ChangeMe_StrongP@ss2026!}
@@ -112,8 +117,8 @@ services:
       options:
         max-size: "100m"
         max-file: "5"
-        labels: "smart-cs-app"
-        tag: "smart-cs-app"
+      labels: "smart-cs-app"
+      tag: "smart-cs-app"
     networks:
       - smart-cs-net
 
@@ -139,7 +144,7 @@ services:
 
   # ── Promtail（日志采集 Agent）──────────────────────────
   promtail:
-    image: grafana/promtail:3.6.11
+    image: grafana/promtail:3.7.2
     container_name: smart-cs-promtail
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
@@ -161,8 +166,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin123}
-      GF_SERVER_ROOT_URL: http://localhost:3000
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?请在 .env 中设置 GRAFANA_PASSWORD}
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
+      TZ: Asia/Shanghai
     volumes:
       - grafana_data:/var/lib/grafana
       - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro

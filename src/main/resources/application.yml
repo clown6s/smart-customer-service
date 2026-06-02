@@ -111,7 +111,7 @@ management:
 # 自定义配置
 cs:
   cors:
-    origins: ${CORS_ORIGIN:*}
+    origins: ${CORS_ORIGIN:}
   rate-limit:
     max-requests: ${RATE_LIMIT_MAX_REQUESTS:10}
     window-seconds: ${RATE_LIMIT_WINDOW_SECONDS:60}

@@ -1,11 +1,12 @@
 # ============================================================
-# Loki 配置文件
+# Loki 3.7 配置文件（使用 tsdb 存储，替代已废弃的 boltdb-shipper）
 # ============================================================
 auth_enabled: false
 
 server:
   http_listen_port: 3100
   grpc_listen_port: 9096
+  log_level: warn
 
 common:
   instance_addr: 127.0.0.1
@@ -19,39 +20,39 @@ common:
     kvstore:
       store: inmemory
 
+# Loki 3.x 使用 tsdb 存储引擎
 schema_config:
   configs:
     - from: 2024-01-01
-      store: boltdb-shipper
+      store: tsdb
       object_store: filesystem
       schema: v13
       index:
         prefix: index_
         period: 24h
 
-storage_config:
-  boltdb_shipper:
-    active_index_directory: /loki/index
-    cache_location: /loki/index_cache
-    shared_store: filesystem
+storage:
   filesystem:
     directory: /loki/chunks
 
 limits_config:
   enforce_metric_name: false
   reject_old_samples: true
+  reject_old_samples_max_age: 168h
   max_streams_per_user: 100
+  max_global_streams_per_user: 1000
 
-chunk_store_config:
-  max_look_back_period: 24h
-
-table_manager:
-  retention_deletes_enabled: true
-  retention_period: 30d
+# 日志保留 30 天
+compactor:
+  working_directory: /loki/compactor
+  compactor_ring:
+    kvstore:
+      store: inmemory
 
 ruler:
   storage:
-      type: local
-      local:
-        directory: /loki/rules
-    rule_dir: /loki/rules
+    type: local
+    local:
+      directory: /loki/rules
+  rule_dir: /loki/rules
+  alertmanager_url: ""
