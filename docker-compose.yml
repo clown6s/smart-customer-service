@@ -6,14 +6,12 @@
 services:
   # ── PostgreSQL ─────────────────────────────────────────
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: smart-cs-postgres
     environment:
       POSTGRES_DB: smart_cs
       POSTGRES_USER: root
       POSTGRES_PASSWORD: ${DB_PASSWORD:-ChangeMe_2024!}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -40,7 +38,7 @@ services:
 
   # ── Redis ─────────────────────────────────────────────
   redis:
-    image: redis:7-alpine
+    image: redis:8.6-alpine
     container_name: smart-cs-redis
     command: >
       redis-server
@@ -48,8 +46,6 @@ services:
       --maxmemory 256mb
       --maxmemory-policy allkeys-lru
       --appendonly yes
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-ChangeMe_StrongP@ss2026!}", "ping"]
       interval: 10s
@@ -124,8 +120,6 @@ services:
   loki:
     image: grafana/loki:3.0-alpine
     container_name: smart-cs-loki
-    ports:
-      - "3100:3100"
     command: -config.file=/etc/loki/config.yaml
     volumes:
       - loki_data:/loki
