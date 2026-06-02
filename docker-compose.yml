@@ -117,8 +117,7 @@ services:
       options:
         max-size: "100m"
         max-file: "5"
-      labels: "smart-cs-app"
-      tag: "smart-cs-app"
+        tag: "smart-cs-app"
     networks:
       - smart-cs-net
 
