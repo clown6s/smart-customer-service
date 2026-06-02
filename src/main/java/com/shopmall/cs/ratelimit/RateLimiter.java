@@ -33,10 +33,10 @@ public class RateLimiter {
 
     private final StringRedisTemplate redisTemplate;
 
-    @Value("${cs.rate-limit:.max-requests:10}")
+    @Value("${cs.rate-limit.max-requests:10}")
     private int maxRequests;
 
-    @Value("${cs.rate-limit:.window-seconds:60}")
+    @Value("${cs.rate-limit.window-seconds:60}")
     private int windowSeconds;
 
     // ── Lua 脚本：滑动窗口（Sorted Set）───────────────────────
