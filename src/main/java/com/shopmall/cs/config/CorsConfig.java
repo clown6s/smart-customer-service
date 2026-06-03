@@ -13,7 +13,7 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("${cs.cors.origins:*}")
+    @Value("${cs.cors.origins:}")
     private String corsOrigins;
 
     @Bean

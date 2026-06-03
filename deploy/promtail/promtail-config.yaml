@@ -28,6 +28,15 @@ scrape_configs:
         target_label: "stream"
       - source_labels: ["__meta_docker_container_id"]
         target_label: "container_id"
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            logger: logger
+            traceId: traceId
+            message: message
+            userId: userId
+            sessionId: sessionId
 
   # ── 采集 smart-cs-postgres 容器日志 ─────────────
   - job_name: smart-cs-postgres

@@ -11,7 +11,7 @@ services:
     environment:
       POSTGRES_DB: smart_cs
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-ChangeMe_2024!}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?请在 .env 中设置 DB_PASSWORD}
       TZ: Asia/Shanghai
     volumes:
       - postgres_data:/var/lib/postgresql
@@ -44,14 +44,14 @@ services:
     container_name: smart-cs-redis
     command: >
       redis-server
-      --requirepass ${REDIS_PASSWORD:-ChangeMe_StrongP@ss2026!}
+      --requirepass ${REDIS_PASSWORD:?请在 .env 中设置 REDIS_PASSWORD}
       --maxmemory 256mb
       --maxmemory-policy allkeys-lru
       --appendonly yes
     environment:
       TZ: Asia/Shanghai
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-ChangeMe_StrongP@ss2026!}", "--no-auth-warning", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "--no-auth-warning", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -87,11 +87,11 @@ services:
       # 数据库连接（变量名必须与 application.yml 一致）
       DATABASE_URL: jdbc:postgresql://postgres:5432/smart_cs
       DB_USERNAME: root
-      DB_PASSWORD: ${DB_PASSWORD:-ChangeMe_2024!}
+      DB_PASSWORD: ${DB_PASSWORD:?请在 .env 中设置 DB_PASSWORD}
       # Redis 连接
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-ChangeMe_StrongP@ss2026!}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?请在 .env 中设置 REDIS_PASSWORD}
     ports:
       - "8080:8080"
     depends_on:

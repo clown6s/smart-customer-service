@@ -46,6 +46,3 @@ ENV JAVA_OPTS="-XX:+UseContainerSupport \
   -Dspring.profiles.active=prod"
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD wget -qO- http://localhost:8080/actuator/health/liveness || exit 1
