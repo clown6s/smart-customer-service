@@ -24,6 +24,8 @@ scrape_configs:
     relabel_configs:
       - source_labels: ["__meta_docker_container_name"]
         target_label: "container_name"
+        regex: "/(.*)"
+        replacement: "$1"
       - source_labels: ["__meta_docker_container_log_stream"]
         target_label: "stream"
       - source_labels: ["__meta_docker_container_id"]
@@ -48,6 +50,8 @@ scrape_configs:
     relabel_configs:
       - source_labels: ["__meta_docker_container_name"]
         target_label: "container_name"
+        regex: "/(.*)"
+        replacement: "$1"
       - source_labels: ["__meta_docker_container_log_stream"]
         target_label: "stream"
 
@@ -61,5 +65,7 @@ scrape_configs:
     relabel_configs:
       - source_labels: ["__meta_docker_container_name"]
         target_label: "container_name"
+        regex: "/(.*)"
+        replacement: "$1"
       - source_labels: ["__meta_docker_container_log_stream"]
         target_label: "stream"

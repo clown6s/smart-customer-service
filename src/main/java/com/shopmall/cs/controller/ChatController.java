@@ -8,7 +8,6 @@ import com.shopmall.cs.model.dto.ChatResponse;
 import com.shopmall.cs.ratelimit.RateLimiter;
 import com.shopmall.cs.service.ChatService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,15 +26,22 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class ChatController {
 
     private final ChatService chatService;
     private final RateLimiter rateLimiter;
     private final ObjectMapper objectMapper;
-
-    @Qualifier("sseExecutor")
     private final ExecutorService sseExecutor;
+
+    public ChatController(ChatService chatService,
+                          RateLimiter rateLimiter,
+                          ObjectMapper objectMapper,
+                          @Qualifier("sseExecutor") ExecutorService sseExecutor) {
+        this.chatService = chatService;
+        this.rateLimiter = rateLimiter;
+        this.objectMapper = objectMapper;
+        this.sseExecutor = sseExecutor;
+    }
 
     /**
      * JSON 对话接口（支持 Function Calling）
