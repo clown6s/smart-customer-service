@@ -123,7 +123,7 @@ services:
 
   # ── Prometheus（指标采集与存储）────────────────────────
   prometheus:
-    image: prom/prometheus:v3.4.0
+    image: prom/prometheus:v3.12.0
     container_name: smart-cs-prometheus
     volumes:
       - prometheus_data:/prometheus
