@@ -121,6 +121,34 @@ services:
     networks:
       - smart-cs-net
 
+  # ── Prometheus（指标采集与存储）────────────────────────
+  prometheus:
+    image: prom/prometheus:v3.4.0
+    container_name: smart-cs-prometheus
+    volumes:
+      - prometheus_data:/prometheus
+      - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=30d"
+      - "--web.enable-lifecycle"
+    depends_on:
+      - app
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - smart-cs-net
+
   # ── Loki（日志聚合存储）───────────────────────────────
   loki:
     image:  grafana/loki:3.7.2
@@ -193,6 +221,7 @@ services:
 
 volumes:
   postgres_data:
+  prometheus_data:
   loki_data:
   grafana_data:
 
