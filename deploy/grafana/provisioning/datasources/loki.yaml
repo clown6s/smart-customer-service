@@ -8,6 +8,7 @@ datasources:
     type: prometheus
     access: proxy
     url: http://prometheus:9090
+    uid: prometheus
     isDefault: true
     editable: true
     jsonData:
@@ -18,6 +19,7 @@ datasources:
     type: loki
     access: proxy
     url: http://loki:3100
+    uid: loki
     isDefault: false
     editable: true
     jsonData:

@@ -19,7 +19,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "datasource": { "type": "loki", "uid": "loki" },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
       "id": 1,
       "options": {
@@ -34,7 +34,7 @@
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "datasource": { "type": "loki", "uid": "loki" },
           "expr": "{container_name=\"smart-cs-app\"} | json | level=~\"ERROR|WARN\"",
           "legendFormat": "",
           "refId": "A"
@@ -44,7 +44,7 @@
       "type": "logs"
     },
     {
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "datasource": { "type": "loki", "uid": "loki" },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
       "id": 2,
       "options": {
@@ -53,7 +53,7 @@
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "datasource": { "type": "loki", "uid": "loki" },
           "expr": "sum by (level) (count_over_time({container_name=\"smart-cs-app\"} | json | level != \"\" [$__interval]))",
           "legendFormat": "{{level}}",
           "refId": "A"
@@ -63,7 +63,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "datasource": { "type": "loki", "uid": "loki" },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
       "id": 3,
       "options": {
@@ -72,7 +72,7 @@
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "datasource": { "type": "loki", "uid": "loki" },
           "expr": "sum(rate({container_name=\"smart-cs-app\"} | json | level=\"ERROR\" [$__interval])) by (logger)",
           "legendFormat": "{{logger}}",
           "refId": "A"
@@ -82,7 +82,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "datasource": { "type": "loki", "uid": "loki" },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
       "id": 4,
       "options": {
@@ -97,7 +97,7 @@
       },
       "targets": [
         {
-          "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+          "datasource": { "type": "loki", "uid": "loki" },
           "expr": "{container_name=\"smart-cs-app\"} | json | traceId=~\"$traceId\"",
           "legendFormat": "",
           "refId": "A"
@@ -112,20 +112,6 @@
   "tags": ["smart-customer-service"],
   "templating": {
     "list": [
-      {
-        "current": {},
-        "hide": 0,
-        "includeAll": false,
-        "label": "Loki",
-        "multi": false,
-        "name": "DS_LOKI",
-        "options": [],
-        "query": "datasources",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "type": "datasource"
-      },
       {
         "current": { "selected": false, "text": "", "value": "" },
         "hide": 0,
