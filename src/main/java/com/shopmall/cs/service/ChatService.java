@@ -63,7 +63,7 @@ public class ChatService {
 
             // 3. 转人工关键词检测
             String trimmed = message.trim();
-            if ("转人工".equals(trimmed) || "人工".equals(trimmed) || trimmed.contains("转人工")) {
+            if ("人工".equals(trimmed) || trimmed.contains("转人工")) {
                 String reply = "好的，正在为您转接人工客服，请稍等...\n人工客服服务时间：每天 9:00-21:00";
                 sessionService.saveAssistantMessage(sessionId, userId, reply);
                 return ChatResponse.builder()
